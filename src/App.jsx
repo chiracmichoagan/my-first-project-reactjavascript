@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import  { useState } from "react";
+import Header from "./components/Header";
 
 export default function App() {
   const [tasks, setTasks] = useState([
@@ -58,18 +59,20 @@ export default function App() {
   });
 
   return (
+    <div>
+    <Header></Header>
     <div className="container mx-auto p-4">
-      <h1 className="text-4xl font-bold text-center mb-8">TodoMatic</h1>
+      <h1 className="text-4xl font-bold text-center mb-8">Todo list</h1>
       <form onSubmit={addTask} className="flex gap-4 mb-6">
         <input
           type="text"
-          placeholder="What needs to be done?"
+          placeholder="Entrer votre Todo"
           className="input input-bordered w-full"
           value={newTaskName}
           onChange={(e) => setNewTaskName(e.target.value)}
         />
-        <button type="submit" className="btn btn-primary">
-          Add
+        <button type="submit" className="btn btn-primary rounded-2xl">
+          Ajouter
         </button>
       </form>
       <div className="flex justify-center gap-4 mb-6">
@@ -77,7 +80,7 @@ export default function App() {
           className={`btn ${filter === "all" ? "btn-active" : ""}`}
           onClick={() => setFilter("all")}
         >
-          All
+          Tous
         </button>
         <button
           className={`btn ${filter === "active" ? "btn-active" : ""}`}
@@ -89,59 +92,76 @@ export default function App() {
           className={`btn ${filter === "completed" ? "btn-active" : ""}`}
           onClick={() => setFilter("completed")}
         >
-          Completed
+          Terminé
         </button>
       </div>
-      <ul className="space-y-4">
+
+      <div className="flex flex-wrap justify-around">
         {filteredTasks.map((task) => (
-          <li key={task.id} className="card shadow-md p-4 flex items-center">
-            <div className="flex-grow">
-              <input
-                type="checkbox"
-                className="checkbox mr-4"
-                checked={task.completed}
-                onChange={() => toggleTaskCompleted(task.id)}
+          <div key={task.id} className="card bg-base-100 w-96 shadow-xl m-4">
+            {" "}
+            {/* Ajout de marges pour espacer les cartes */}
+            <figure>
+              <img
+                src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                alt="Todo Image" // Remplacez par une image pertinente si nécessaire
               />
-              {editingTaskId === task.id ? (
+            </figure>
+            <div className="card-body">
+              <h2 className="card-title">
+                {task.name}
+                <div className="badge badge-secondary">
+                  {task.completed ? "Completed" : "Pending"}
+                </div>
+              </h2>
+              <p>{task.description || "No description available."}</p>
+              <div className="card-actions justify-end">
                 <input
-                  type="text"
-                  className="input input-bordered"
-                  value={editingTaskName}
-                  onChange={(e) => setEditingTaskName(e.target.value)}
+                  type="checkbox"
+                  className="checkbox mr-4"
+                  checked={task.completed}
+                  onChange={() => toggleTaskCompleted(task.id)}
                 />
-              ) : (
-                <span
-                  className={`${
-                    task.completed ? "line-through text-gray-500" : ""
-                  }`}
-                >
-                  {task.name}
-                </span>
-              )}
-            </div>
-            <div className="flex gap-2">
-              {editingTaskId === task.id ? (
-                <button className="btn btn-secondary" onClick={saveTask}>
-                  Save
-                </button>
-              ) : (
+                {editingTaskId === task.id ? (
+                  <input
+                    type="text"
+                    className="input input-bordered"
+                    value={editingTaskName}
+                    onChange={(e) => setEditingTaskName(e.target.value)}
+                  />
+                ) : (
+                  <span
+                    className={`${
+                      task.completed ? "line-through text-gray-500" : ""
+                    }`}
+                  >
+                    {task.name}
+                  </span>
+                )}
+                {editingTaskId === task.id ? (
+                  <button className="btn btn-secondary" onClick={saveTask}>
+                    Save
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-warning"
+                    onClick={() => editTask(task.id)}
+                  >
+                    Edit
+                  </button>
+                )}
                 <button
-                  className="btn btn-warning"
-                  onClick={() => editTask(task.id)}
+                  className="btn btn-error"
+                  onClick={() => deleteTask(task.id)}
                 >
-                  Edit
+                  Delete
                 </button>
-              )}
-              <button
-                className="btn btn-error"
-                onClick={() => deleteTask(task.id)}
-              >
-                Delete
-              </button>
+              </div>
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
+    </div>
     </div>
   );
 }
